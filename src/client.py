@@ -10,8 +10,9 @@ def get_list() -> list[str]: return [Simplaza.get_homepage(DATATYPE="format", le
 
 
 if __name__ == "__main__":
-    print(Simplaza.__name__)
+    print(Simplaza().logo)
+    print()
     for e in range(Simplaza.get_homepage(list_len=True)):
         print(str(get_list()[e]))
 
-    print(Simplaza().version)
+    
