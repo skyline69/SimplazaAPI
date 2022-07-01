@@ -3,7 +3,7 @@ from bs4 import BeautifulSoup
 from functools import lru_cache
 from datetime import date
 from asyncio import run as arun
-
+from ping3 import ping
 
 __version__ = "v0.0.1-dev"
 
@@ -30,12 +30,13 @@ class Simplaza:
         scraper = create_scraper()
         return scraper.get("https://simplaza.org/").text
 
-    soup = BeautifulSoup(arun(data()), features="html.parser")
+    soup = BeautifulSoup(arun(data(), debug=False), features="html.parser")
 
 
     postdivs = soup.findAll("article", id=lambda value: value and value.startswith("post-"))
     current_year = date.today().year
 
+    def ping() -> str: return "Time: \033[93m{:.2f}s\033[0m".format(ping("simplaza.org"))
 
     def get_homepage(DATATYPE:str=None, length:int=0, list_len:bool=False) -> (str | int | dict[int, str]):   # use "print(Simplaza.get_homepage.__doc__)" to get more information about this Function
         
