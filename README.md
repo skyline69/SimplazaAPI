@@ -9,3 +9,5 @@
 ## **Primary purpose**
 
 ### *The Simplaza CLI program is going to be capable of scanning the simplaza webpage entirely and use the meta data from addon files to check if there are any updates available for the certain files in the MSFS community folder*
+---
+###  ⚠️ **Note**: _***I do NOT take any responsibility for any kind of actions or use of this program!***_ ⚠️
