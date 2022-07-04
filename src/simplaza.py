@@ -58,8 +58,6 @@ class Simplaza:
             dump(CONIGDATA, f_)
 
 
-    Thread(target=check_create_config, args=()).start()
-
     @lru_cache(maxsize=2, typed=True)
     async def data() -> str: 
         scraper = create_scraper()
