@@ -1,9 +1,16 @@
+from typing import Literal
 from cloudscraper import create_scraper
 from bs4 import BeautifulSoup
 from functools import lru_cache
 from datetime import date
 from asyncio import run as arun
 from ping3 import ping
+from os.path import exists
+from json import dump, loads
+from json.decoder import JSONDecodeError
+from threading import Thread
+from time import sleep as tsleep
+
 
 __version__ = "v0.0.1-dev"
 
@@ -24,6 +31,34 @@ class Simplaza:
                      \033[94m  |_|      \033[0m                                \033[90m{self.version}\033[0m       
     """
 
+    if not exists("./config.json"):
+        with open("config.json", "w+") as f_:
+
+            CONIGDATA:dict[str,str] = {
+                "path":"here comes the path for the community folder"
+            }
+            dump(CONIGDATA, f_)
+        print("\n- config.json was not found so a new config.json file was created")
+        tsleep(2)
+    
+    def check_create_config() -> None:
+        if not exists("./config.json"):
+            with open("config.json", "w+") as f_:
+
+                CONIGDATA:dict[str,str] = {
+                    "path":"here comes the path for the community folder"
+                }
+                dump(CONIGDATA, f_)
+
+    def create_config() -> None:
+        with open("config.json", "w+") as f_:
+            CONIGDATA:dict[str,str] = {
+                "path":"here comes the path for the community folder"
+            }
+            dump(CONIGDATA, f_)
+
+
+    Thread(target=check_create_config, args=()).start()
 
     @lru_cache(maxsize=2, typed=True)
     async def data() -> str: 
@@ -35,7 +70,6 @@ class Simplaza:
 
     postdivs = soup.findAll("article", id=lambda value: value and value.startswith("post-"))
     current_year = date.today().year
-
     def ping() -> str: return "Time: \033[93m{:.2f}s\033[0m".format(ping("simplaza.org"))
 
     def get_homepage(DATATYPE:str=None, length:int=0, list_len:bool=False) -> (str | int | dict[int, str]):   # use "print(Simplaza.get_homepage.__doc__)" to get more information about this Function
@@ -61,5 +95,18 @@ class Simplaza:
             return ({length:str(posts[0].find("a").text)})
 
         else: raise(TypeError("Unvalid datatype at get_homepage()"))
-        
-        
+
+    def check_community() -> (Literal["new-file-created","broken-file"] | None):
+        try:
+            with open("config.json", "r") as f:
+                CONFIG_DATA:str = loads(f.read())["path"]
+
+            return CONFIG_DATA
+
+        except FileNotFoundError: 
+            Thread(target=Simplaza.check_create_config, args=()).start()
+            return "new-file-created"
+
+        except JSONDecodeError:
+            Thread(target=Simplaza.create_config, args=()).start()
+            return "broken-file"
